@@ -34,18 +34,24 @@ class DB:
 
         Table name : self._table_name
         Column names:
-
-        - process_id : TEXT (not null)
-        - file_name : TEXT (default is null)
-        - description : TEXT (default is null)
-        - start_time : TEXT (not null)
-        - end_time : TEXT (default is null)
-        - percentage : REAL (default is null)
+ process_id, file_name, description, start_time, end_time, percentage, file_path
 
         Read more about datatypes in Sqlite here -> https://www.sqlite.org/datatype3.html
         """
     ######################################## YOUR CODE HERE ##################################################
-
+        self._connection.execute(f'''
+            CREATE TABLE IF NOT EXISTS {self._table_name}
+            (
+                process_id  TEXT PRIMARY KEY,
+                file_name  TEXT default null,
+                file_path  TEXT default null,
+                description  TEXT default null,
+                start_time  TEXT not null,
+                end_time  TEXT default null,
+                percentage  REAL default null
+            )
+        ''')
+        self._connection.commit()
     ######################################## YOUR CODE HERE ##################################################
 
     def insert(self, process_id, start_time, file_name=None, file_path=None,
@@ -63,7 +69,8 @@ class DB:
         :return: None
         """
     ######################################## YOUR CODE HERE ##################################################
-
+        self._connection.execute(f"INSERT INTO {self._table_name} ( process_id, file_name, file_path, description, start_time, end_time, percentage) VALUES (?, ?, ?, ?, ?, ?, ?)", ( process_id, file_name, file_path, description, start_time, end_time, percentage  ))
+        self._connection.commit()
     ######################################## YOUR CODE HERE ##################################################
 
     def read_all(self) -> List[Dict]:
@@ -95,7 +102,8 @@ class DB:
         :return: None
         """
     ######################################## YOUR CODE HERE ##################################################
-
+        self._connection.execute(f"UPDATE {self._table_name} SET percentage = ? WHERE process_id = ?", (percentage, process_id))
+        self._connection.commit()
     ######################################## YOUR CODE HERE ##################################################
 
 
